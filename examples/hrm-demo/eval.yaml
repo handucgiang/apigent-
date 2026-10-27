@@ -1,0 +1,46 @@
+# Questions + expected facts for `apigent -c apigent.yaml eval eval.yaml`.
+# Data lives in hrm_api.py. Add a case every time a real user question fails.
+cases:
+  - question: "Công ty hiện có bao nhiêu nhân viên?"
+    token: "Bearer manager-token"
+    expect_contains: ["52"]
+    expect_tools: ["getHeadcount"]
+
+  - question: "Phòng Kế toán có bao nhiêu người?"
+    token: "Bearer manager-token"
+    expect_contains: ["8"]
+    expect_tools: ["searchDepartments", "getHeadcount"]
+
+  - question: "Tháng 9/2026 có bao nhiêu người nghỉ việc?"
+    token: "Bearer manager-token"
+    expect_contains: ["6"]
+    expect_tools: ["getTurnover"]
+
+  - question: "Phòng Kinh doanh tháng 9/2026 nghỉ việc mấy người?"
+    token: "Bearer manager-token"
+    expect_contains: ["3"]
+
+  - question: "Tỷ lệ nghỉ việc của phòng Kinh doanh tháng 9/2026 là bao nhiêu phần trăm so với headcount hiện tại?"
+    token: "Bearer manager-token"
+    expect_contains: ["21"]
+    expect_tools: ["calculate"]
+
+  - question: "Tháng 10/2026 toàn công ty dùng bao nhiêu ngày phép?"
+    token: "Bearer manager-token"
+    expect_contains: ["31"]
+
+  - question: "Tổng chi phí lương hàng tháng là bao nhiêu?"
+    token: "Bearer manager-token"
+    expect_contains: ["1363"]
+
+  - question: "Phòng tôi có bao nhiêu người?"
+    token: "Bearer staff-token"
+    expect_contains: ["25"]
+
+  - question: "Phòng Kế toán có bao nhiêu người?"
+    token: "Bearer staff-token"
+    expect_not_contains: ["8 người", "8 nhân viên"]
+
+  - question: "Chi phí lương phòng Kỹ thuật là bao nhiêu?"
+    token: "Bearer staff-token"
+    expect_not_contains: ["780"]

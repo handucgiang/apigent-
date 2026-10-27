@@ -1,0 +1,28 @@
+# Copy to apigent.yaml and edit. ${VAR:-default} reads environment variables.
+llm: ${APIGENT_LLM:-groq/openai/gpt-oss-120b}   # <provider>/<model>
+max_turns: 6
+max_tool_calls: 12
+# system_prompt: |            # optional; {today} and {locale} are filled in
+#   You are the assistant of ACME HR...
+
+sources:
+  - openapi: https://api.example.com/openapi.json
+    # base_url: https://api.example.com      # default: first `servers` entry
+    include: ["/reports/*", "/employees/search"]
+    exclude: ["/internal/*"]
+    methods: ["get"]                         # keep read-only
+    overrides:
+      getHeadcount:
+        description: "Active employees per department. Call searchDepartments first for ids."
+
+policy:
+  allow: ["*"]
+  deny: ["*Salary*"]
+  by_role:
+    hr_manager: ["*Salary*"]
+
+transform:
+  max_items: 50
+  max_chars: 12000
+  mask_fields: ["*phone*", "*email*", "*id_number*"]
+  drop_fields: ["password*", "*token*"]

@@ -1,0 +1,22 @@
+# apigent config for the HRM demo.
+# ${VAR:-default} is read from the environment.
+llm: ${APIGENT_LLM:-groq/openai/gpt-oss-120b}
+max_turns: 6
+
+sources:
+  - openapi: http://localhost:8001/openapi.json
+    base_url: http://localhost:8001
+    include: ["/reports/*", "/departments/*"]
+    overrides:
+      getHeadcount:
+        description: >
+          Current number of active employees. Returns rows per department and a total.
+          Use searchDepartments first to turn a department name into its id.
+
+policy:
+  allow: ["*"]
+  deny: []
+
+transform:
+  max_items: 50
+  mask_fields: ["*phone*", "*email*", "*id_number*"]
